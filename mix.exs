@@ -42,7 +42,8 @@ defmodule LiberatorTest.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:ecto, "~> 3.5"},
       {:phoenix_ecto, "~> 4.2"},
-      {:liberator, "~> 1.4.0-rc.1"}
+      {:liberator, "~> 1.4.0-rc.1"},
+      {:ecto_sqlite3, "~> 0.5.2"}
     ]
   end
 

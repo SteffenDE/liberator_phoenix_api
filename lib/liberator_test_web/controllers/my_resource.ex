@@ -13,11 +13,11 @@ defmodule LiberatorTestWeb.MyResource do
 
     case id do
       nil ->
-        %{resources: []}
+        %{resources: LiberatorTest.Repo.all(LiberatorTest.Resource)}
 
       id ->
         try do
-          raise Ecto.NoResultsError
+          LiberatorTest.Repo.get!(LiberatorTest.Resource, id)
         rescue
           Ecto.NoResultsError -> false
           ArgumentError -> false
@@ -28,13 +28,9 @@ defmodule LiberatorTestWeb.MyResource do
   end
 
   @impl true
-  def post!(conn) do
-    with {:ok, resource} <- LiberatorTest.Resource.changeset(%LiberatorTest.Resource{}, %{"email" => "abc"}) do
-      %{created_resource: resource}
-    else
-      %{error: other} -> %{error: other}
-      other -> %{error: other}
-    end
+  def post!(_conn) do
+    LiberatorTest.Resource.changeset(%LiberatorTest.Resource{}, %{"email" => "abc"})
+    |> LiberatorTest.Repo.insert!()
   end
 
   @impl true
@@ -47,16 +43,13 @@ defmodule LiberatorTestWeb.MyResource do
   def handle_created(_conn = %{assigns: %{created_resource: resource}}), do: resource
 
   @impl true
-  def handle_created(conn = %{assigns: %{error: error}}) do
-    conn = LiberatorTestWeb.FallbackResource.call(conn, error)
-    IO.inspect(conn, label: "returned from handle_created")
-    conn
+  def handle_error(conn, %Ecto.InvalidChangesetError{changeset: changeset}, _failed_step) do
+    LiberatorTestWeb.FallbackResource.call(conn, changeset)
   end
 
   @impl true
-  def handle_error(conn, error, failed_step) do
-    IO.inspect(error, label: "err")
-    IO.inspect(failed_step)
-    resp(conn, 500, "Internal Server Error")
+  def handle_error(conn, error, _failed_step) do
+    IO.inspect(error)
+    resp(conn, 500, "Error")
   end
 end

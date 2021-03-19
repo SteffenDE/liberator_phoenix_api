@@ -9,6 +9,7 @@ defmodule LiberatorTest.Application do
     children = [
       # Start the Telemetry supervisor
       LiberatorTestWeb.Telemetry,
+      LiberatorTest.Repo,
       # Start the PubSub system
       {Phoenix.PubSub, name: LiberatorTest.PubSub},
       # Start the Endpoint (http/https)

@@ -2,7 +2,7 @@ defmodule LiberatorTest.Resource do
   use Ecto.Schema
   import Ecto.Changeset
 
-  embedded_schema do
+  schema "users" do
     field :name
     field :email
     field :age, :integer
