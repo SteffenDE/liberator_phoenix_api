@@ -16,21 +16,14 @@ defmodule LiberatorTestWeb.MyResource do
         %{resources: LiberatorTest.Repo.all(LiberatorTest.Resource)}
 
       id ->
-        try do
-          LiberatorTest.Repo.get!(LiberatorTest.Resource, id)
-        rescue
-          Ecto.NoResultsError -> false
-          ArgumentError -> false
-        else
-          resource -> %{resource: resource}
-        end
+        %{resource: LiberatorTest.Repo.get!(LiberatorTest.Resource, id)}
     end
   end
 
   @impl true
   def post!(_conn) do
     LiberatorTest.Resource.changeset(%LiberatorTest.Resource{}, %{"email" => "abc"})
-    |> LiberatorTest.Repo.insert!()
+    |> LiberatorTest.Repo.insert()
   end
 
   @impl true
@@ -43,13 +36,6 @@ defmodule LiberatorTestWeb.MyResource do
   def handle_created(_conn = %{assigns: %{created_resource: resource}}), do: resource
 
   @impl true
-  def handle_error(conn, %Ecto.InvalidChangesetError{changeset: changeset}, _failed_step) do
-    LiberatorTestWeb.FallbackResource.call(conn, changeset)
-  end
-
-  @impl true
-  def handle_error(conn, error, _failed_step) do
-    IO.inspect(error)
-    resp(conn, 500, "Error")
-  end
+  def handle_error(conn, error, _failed_step),
+    do: LiberatorTestWeb.FallbackController.call(conn, error)
 end

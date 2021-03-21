@@ -10,8 +10,7 @@ use Mix.Config
 config :liberator_test,
   ecto_repos: [LiberatorTest.Repo]
 
-config :liberator_test, LiberatorTest.Repo,
-  database: "./database.db"
+config :liberator_test, LiberatorTest.Repo, database: "./database.db"
 
 # Configures the endpoint
 config :liberator_test, LiberatorTestWeb.Endpoint,

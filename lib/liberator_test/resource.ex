@@ -3,9 +3,9 @@ defmodule LiberatorTest.Resource do
   import Ecto.Changeset
 
   schema "users" do
-    field :name
-    field :email
-    field :age, :integer
+    field(:name)
+    field(:email)
+    field(:age, :integer)
   end
 
   def changeset(resource, params \\ %{}) do
